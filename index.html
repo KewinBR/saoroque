@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rota do Vinho • São Roque</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #722F37; /* Wine Red */
+            --primary-light: #9b4450;
+            --secondary: #D4AF37; /* Gold */
+            --bg-color: #FDFBF7;
+            --card-bg: #FFFFFF;
+            --text-main: #2C2C2C;
+            --text-light: #666666;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(44, 44, 44, 0.8), rgba(114, 47, 55, 0.8)), url('https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
+            color: white;
+            text-align: center;
+            padding: 6rem 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background-color: var(--secondary);
+            margin: 1rem auto 0;
+        }
+
+        /* Places Grid */
+        .places-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 5rem;
+        }
+
+        .place-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+            border-top: 4px solid var(--primary);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .place-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            background-color: rgba(114, 47, 55, 0.03);
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-header h3 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-info {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            background-color: rgba(212, 175, 55, 0.15);
+            color: #8c7320;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .price-list {
+            margin: 1rem 0;
+            background: #f9f9f9;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .price-list strong {
+            display: block;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-footer {
+            padding: 1.5rem;
+            background: #fcfcfc;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-insta {
+            background-color: #E1306C;
+            color: white;
+        }
+        
+        .btn-insta:hover { background-color: #C13584; }
+
+        .btn-wpp {
+            background-color: #25D366;
+            color: white;
+        }
+        
+        .btn-wpp:hover { background-color: #128C7E; }
+        
+        .btn-map {
+            background-color: var(--text-light);
+            color: white;
+        }
+        
+        .btn-map:hover { background-color: var(--text-main); }
+
+        /* Itinerary Section */
+        .itinerary-section {
+            background-color: white;
+            padding: 4rem 0;
+            border-top: 1px solid #eee;
+        }
+
+        .itinerary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .itinerary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .itinerary-card {
+            border: 1px solid #eaeaea;
+            border-radius: 12px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .itinerary-card h3 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .itinerary-desc {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--secondary);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.35rem;
+            top: 0.3rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            border: 2px solid white;
+        }
+
+        .time-badge {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .timeline-item h4 {
+            font-size: 1.1rem;
+            color: var(--text-main);
+            margin-bottom: 0.2rem;
+        }
+        
+        .timeline-item p {
+            font-size: 0.95rem;
+            color: var(--text-light);
+        }
+
+        .itinerary-footer {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px dashed #ccc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-price {
+            font-size: 1.25rem;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .ideal-for {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* Tips Section */
+        .tips-panel {
+            background: var(--primary);
+            color: white;
+            padding: 3rem;
+            border-radius: 12px;
+            margin: 4rem auto;
+            max-width: 900px;
+        }
+
+        .tips-panel h3 {
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        @media (max-width: 600px) {
+            .tips-grid { grid-template-columns: 1fr; }
+        }
+
+        .tip-item i {
+            color: var(--secondary);
+            margin-right: 0.5rem;
+        }
+        
+        .highlight-text {
+            color: var(--secondary);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <section class="hero">
+        <h1>Rota do Vinho</h1>
+        <p>São Roque • São Paulo</p>
+        <p style="margin-top: 1rem; font-size: 1rem; opacity: 0.9;">Um guia completo de vinícolas, gastronomia e experiências imperdíveis.</p>
+    </section>
+
+    <div class="container">
+        <h2 class="section-title">Locais e Atrações</h2>
+        
+        <div class="places-grid">
+            <!-- Vinhos Bella Aurora -->
+            <div class="place-card">
+                <div class="card-header">
+                    <h3>Vinhos Bella Aurora</h3>
+                    <div class="card-info"><i class="fas fa-map-marker-alt"></i> Rod. Raposo Tavares Km 56.5</div>
+                    <div class="card-info"><i class="far fa-clock"></i> 8h às 18h (Café às 9h)</div>
+                </div>
+                <div class="card-body">
+                    <div class="tag-container">
+                        <span class="tag">Adega</span>
+                        <span class="tag">Café</span>
+                        <span class="tag">Cachaças</span>
+                    </div>
+                    <p>Boa opção para começar o dia com um ambiente tranquilo e tradicional. A degustação de cachaça é muito elogiada.</p>
+                    <div class="price-list">
+                        <strong>Degustações:</strong>
+                        • R$ 15 (5 rótulos)<br>
+                        • R$ 38 (Premium + salame + queijo)
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Vinhos+Bella+Aurora+Sao+Roque" target="_blank" class="btn btn-map"><i class="fas fa-map"></i> Mapa</a>
+                    <a href="https://www.instagram.com/vinhosbellaaurora/" target="_blank" class="btn btn-insta"><i class="fab fa-instagram"></i> Insta</a>
+                    <a href="https://wa.me/5511966166136" target="_blank" class="btn btn-wpp"><i class="fab fa-whatsapp"></i> Chat</a>
+                </div>
+            </div>
+
+            <!-- Divina Cantina -->
+            <div class="place-card">
+                <div class="card-header">
+                    <h3>Divina Cantina</h3>
+                    <div class="card-info"><i class="fas fa-map-marker-alt"></i> Rua Dr. Durval Villaça, 517</div>
+                    <div class="card-info"><i class="far fa-clock"></i> Café: 7h às 11h | Almoço: 12h às 16h</div>
+                </div>
+                <div class="card-body">
+                    <div class="tag-container">
+                        <span class="tag">Café Colonial</span>
+                        <span class="tag">Almoço</span>
+                    </div>
+                    <p>Ponto ideal para quem quer iniciar o roteiro bem alimentado. Ambiente familiar e excelente custo-benefício.</p>
+                    <div class="price-list">
+                        <strong>Valores:</strong>
+                        • Café colonial (Buffet Livre): R$ 30
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Divina+Cantina+Sao+Roque" target="_blank" class="btn btn-map"><i class="fas fa-map"></i> Mapa</a>
+                    <a href="https://www.instagram.com/divina_cantina/?hl=pt" target="_blank" class="btn btn-insta"><i class="fab fa-instagram"></i> Insta</a>
+                    <a href="https://wa.me/5519940560631" target="_blank" class="btn btn-wpp"><i class="fab fa-whatsapp"></i> Chat</a>
+                </div>
+            </div>
+
+            <!-- Vinhos Frank -->
+            <div class="place-card">
+                <div class="card-header">
+                    <h3>Vinhos Frank</h3>
+                    <div class="card-info"><i class="fas fa-map-marker-alt"></i> Estrada do Vinho, Km1</div>
+                    <div class="card-info"><i class="far fa-clock"></i> 10h às 18h</div>
+                </div>
+                <div class="card-body">
+                    <div class="tag-container">
+                        <span class="tag">Empório</span>
+                        <span class="tag">Embutidos</span>
+                    </div>
+                    <p>Uma experiência gastronômica forte. O lugar perfeito para garantir queijos, doces e ótimos embutidos para levar para casa.</p>
+                    <div class="price-list">
+                        <strong>Degustações:</strong>
+                        • R$ 20 (5 vinhos do dia)<br>
+                        • R$ 38 (Com taça de vidro)
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Vinhos+Frank+Sao+Roque" target="_blank" class="btn btn-map"><i class="fas fa-map"></i> Mapa</a>
+                    <a href="https://www.instagram.com/vinhosfrank" target="_blank" class="btn btn-insta"><i class="fab fa-instagram"></i> Insta</a>
+                    <a href="https://wa.me/551147125939" target="_blank" class="btn btn-wpp"><i class="fab fa-whatsapp"></i> Chat</a>
+                </div>
+            </div>
+
+            <!-- Terra do Vinho -->
+            <div class="place-card">
+                <div class="card-header">
+                    <h3>Terra do Vinho</h3>
+                    <div class="card-info"><i class="fas fa-map-marker-alt"></i> Rua Dr. Durval Villaça, 300</div>
+                    <div class="card-info"><i class="far fa-clock"></i> 9h às 18h</div>
+                </div>
+                <div class="card-body">
+                    <div class="tag-container">
+                        <span class="tag">Degustação Técnica</span>
+                        <span class="tag">Gratuito</span>
+                    </div>
+                    <p>Excelente variedade. A degustação premium é mais técnica e ideal para entender melhor o paladar.</p>
+                    <div class="price-list">
+                        <strong>Degustações:</strong>
+                        • Gratuita (3 secos + 3 suaves)<br>
+                        • Premium Guiada: R$ 60 (30 min)
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Terra+do+Vinho+Sao+Roque" target="_blank" class="btn btn-map"><i class="fas fa-map"></i> Mapa</a>
+                    <a href="https://www.instagram.com/vinicolaterradovinho/?hl=pt" target="_blank" class="btn btn-insta"><i class="fab fa-instagram"></i> Insta</a>
+                    <a href="https://wa.me/551147128831" target="_blank" class="btn btn-wpp"><i class="fab fa-whatsapp"></i> Chat</a>
+                </div>
+            </div>
+
+            <!-- Chocolateria Caracol -->
+            <div class="place-card">
+                <div class="card-header">
+                    <h3>Chocolateria Caracol</h3>
+                    <div class="card-info"><i class="fas fa-map-marker-alt"></i> Estrada do Vinho, 400</div>
+                    <div class="card-info"><i class="far fa-clock"></i> 8h às 20h</div>
+                </div>
+                <div class="card-body">
+                    <div class="tag-container">
+                        <span class="tag">Sobremesas</span>
+                        <span class="tag">Fotos</span>
+                        <span class="tag">Fondue</span>
+                    </div>
+                    <p>A parada obrigatória para fechar o dia. Ambiente super instagramável, ótimo para fotos e para dividir um fondue ou waffle.</p>
+                    <div class="price-list">
+                        <strong>Valores (Média):</strong>
+                        • Consumo médio: R$ 35<br>
+                        • Chocolate quente: R$ 18
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Chocolateria+Caracol+Sao+Roque" target="_blank" class="btn btn-map"><i class="fas fa-map"></i> Mapa</a>
+                    <a href="https://www.instagram.com/caracol.saoroque/" target="_blank" class="btn btn-insta"><i class="fab fa-instagram"></i> Insta</a>
+                    <a href="https://wa.me/5511975530303" target="_blank" class="btn btn-wpp"><i class="fab fa-whatsapp"></i> Chat</a>
+                </div>
+            </div>
+
+            <!-- Vila Don Patto -->
+            <div class="place-card">
+                <div class="card-header">
+                    <h3>Vila Don Patto</h3>
+                    <div class="card-info"><i class="fas fa-map-marker-alt"></i> Estrada do Vinho, KM 2,5</div>
+                    <div class="card-info"><i class="far fa-clock"></i> 8h às 23h</div>
+                </div>
+                <div class="card-body">
+                    <div class="tag-container">
+                        <span class="tag">Vista Panorâmica</span>
+                        <span class="tag">Gelateria</span>
+                    </div>
+                    <p>Um dos cenários mais deslumbrantes da rota. Relaxe nas poltronas sob as videiras. Um paraíso para quem gosta de criar conteúdo e fotografar.</p>
+                    <div class="price-list">
+                        <strong>Valores:</strong>
+                        • Estacionamento: R$ 10 (30 min grátis)<br>
+                        • Gelato artesanal: ~R$ 25
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Vila+Don+Patto+Sao+Roque" target="_blank" class="btn btn-map"><i class="fas fa-map"></i> Mapa</a>
+                    <a href="https://www.instagram.com/viladonpatto/?hl=pt" target="_blank" class="btn btn-insta"><i class="fab fa-instagram"></i> Insta</a>
+                    <a href="https://wa.me/5511997747044" target="_blank" class="btn btn-wpp"><i class="fab fa-whatsapp"></i> Chat</a>
+                </div>
+            </div>
+
+            <!-- Quinta do Olivardo -->
+            <div class="place-card">
+                <div class="card-header">
+                    <h3>Quinta do Olivardo</h3>
+                    <div class="card-info"><i class="fas fa-map-marker-alt"></i> Estrada do Vinho, S/N</div>
+                    <div class="card-info"><i class="far fa-clock"></i> 9h às 21h45</div>
+                </div>
+                <div class="card-body">
+                    <div class="tag-container">
+                        <span class="tag">Gastronomia Portuguesa</span>
+                        <span class="tag">Experiência</span>
+                    </div>
+                    <p>Imersão portuguesa! Não deixe de provar o pão com linguiça artesanal ou as excelentes opções de carnes e churrasco do cardápio, que são fantásticas.</p>
+                    <div class="price-list">
+                        <strong>Destaques:</strong>
+                        • Degustação Caverna: R$ 55<br>
+                        • Pão com Linguiça: R$ 28 | Pastel de Belém: R$ 10
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Quinta+do+Olivardo+Sao+Roque" target="_blank" class="btn btn-map"><i class="fas fa-map"></i> Mapa</a>
+                    <a href="https://www.instagram.com/quintadoolivardo/?hl=pt" target="_blank" class="btn btn-insta"><i class="fab fa-instagram"></i> Insta</a>
+                    <a href="https://wa.me/5511988563222" target="_blank" class="btn btn-wpp"><i class="fab fa-whatsapp"></i> Chat</a>
+                </div>
+            </div>
+
+            <!-- Parque Vinícola Góes -->
+            <div class="place-card">
+                <div class="card-header">
+                    <h3>Parque Vinícola Góes</h3>
+                    <div class="card-info"><i class="fas fa-map-marker-alt"></i> Estrada do Vinho, 9111</div>
+                    <div class="card-info"><i class="far fa-clock"></i> 9h às 18h30</div>
+                </div>
+                <div class="card-body">
+                    <div class="tag-container">
+                        <span class="tag">Turismo Profissional</span>
+                        <span class="tag">Passeio no Vinhedo</span>
+                    </div>
+                    <p>A maior estrutura da rota. Cenários perfeitos para explorar seus equipamentos de foto e vídeo. O passeio guiado pelos vinhedos é imperdível.</p>
+                    <div class="price-list">
+                        <strong>Experiência:</strong>
+                        • Passeio Guiado (1h): R$ 90 (Exige reserva)<br>
+                        • Degustação à vontade inclusa
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Parque+Vinicola+Goes+Sao+Roque" target="_blank" class="btn btn-map"><i class="fas fa-map"></i> Mapa</a>
+                    <a href="https://www.instagram.com/parquevinicolagoes/" target="_blank" class="btn btn-insta"><i class="fab fa-instagram"></i> Insta</a>
+                    <a href="https://wa.me/551147113500" target="_blank" class="btn btn-wpp"><i class="fab fa-whatsapp"></i> Chat</a>
+                </div>
+            </div>
+
+            <!-- Vinícola XV de Novembro -->
+            <div class="place-card">
+                <div class="card-header">
+                    <h3>Vinícola XV de Novembro</h3>
+                    <div class="card-info"><i class="fas fa-map-marker-alt"></i> Estr. Achiles A. de Moraes, 500</div>
+                    <div class="card-info"><i class="far fa-clock"></i> 9h às 18h</div>
+                </div>
+                <div class="card-body">
+                    <div class="tag-container">
+                        <span class="tag">Tradição</span>
+                        <span class="tag">Alcachofras</span>
+                    </div>
+                    <p>Além dos vinhos, o grande diferencial é a plantação e os produtos à base de alcachofras. Uma parada clássica e com história.</p>
+                    <div class="price-list">
+                        <strong>Degustações:</strong>
+                        • Balcão: R$ 10 | Vinho Fino: R$ 15<br>
+                        • Completa com taça: R$ 65
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Vinicola+XV+de+Novembro+Sao+Roque" target="_blank" class="btn btn-map"><i class="fas fa-map"></i> Mapa</a>
+                    <a href="https://www.instagram.com/vinicolaxv/" target="_blank" class="btn btn-insta"><i class="fab fa-instagram"></i> Insta</a>
+                    <a href="https://wa.me/5511992053444" target="_blank" class="btn btn-wpp"><i class="fab fa-whatsapp"></i> Chat</a>
+                </div>
+            </div>
+
+            <!-- Vinhos Canguera -->
+            <div class="place-card">
+                <div class="card-header">
+                    <h3>Vinhos Canguera</h3>
+                    <div class="card-info"><i class="fas fa-map-marker-alt"></i> Estrada do Vinho, Km 8</div>
+                    <div class="card-info"><i class="far fa-clock"></i> 9h às 18h</div>
+                </div>
+                <div class="card-body">
+                    <div class="tag-container">
+                        <span class="tag">Artesanal</span>
+                        <span class="tag">Café Cremoso</span>
+                    </div>
+                    <p>Forte em produtos artesanais, como compotas e geleias. As sessões de degustação ocorrem a cada 40 minutos.</p>
+                    <div class="price-list">
+                        <strong>Degustações:</strong>
+                        • Suaves: R$ 35<br>
+                        • Secos: R$ 40
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Vinhos+Canguera+Sao+Roque" target="_blank" class="btn btn-map"><i class="fas fa-map"></i> Mapa</a>
+                    <a href="https://www.instagram.com/vinicolacanguera/" target="_blank" class="btn btn-insta"><i class="fab fa-instagram"></i> Insta</a>
+                    <a href="https://wa.me/551147111304" target="_blank" class="btn btn-wpp"><i class="fab fa-whatsapp"></i> Chat</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Itineraries Section -->
+    <section class="itinerary-section">
+        <div class="container">
+            <h2 class="section-title">Opções de Roteiros • 25 de Julho (Sábado)</h2>
+            <p style="text-align: center; max-width: 700px; margin: 0 auto 3rem; color: var(--text-light);">
+                Saindo de Americana, a viagem leva cerca de 1h45 a 2h. Como o dia escolhido é um sábado de inverno, a região estará bem movimentada. Os roteiros abaixo já estão organizados com horários realistas para evitar filas e aproveitar ao máximo.
+            </p>
+
+            <div class="itinerary-grid">
+                
+                <!-- Roteiro 1 -->
+                <div class="itinerary-card">
+                    <h3>1. Econômico e Relaxado</h3>
+                    <p class="itinerary-desc">Foco em um dia tranquilo, gastando pouco com degustações e curtindo a paisagem.</p>
+                    
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <span class="time-badge">08h30 - 10h15</span>
+                            <h4>Divina Cantina</h4>
+                            <p>Chegue cedo para pegar o buffet de café colonial (R$ 30) bem fresquinho e sem filas.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="time-badge">10h30 - 12h00</span>
+                            <h4>Terra do Vinho</h4>
+                            <p>Degustação tradicional gratuita para abrir o paladar para os vinhos da região.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="time-badge">12h15 - 14h30</span>
+                            <h4>Vila Don Patto</h4>
+                            <p>Hora de relaxar nas poltronas. Ótimo para um gelato artesanal (R$ 25) e fotos.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="time-badge">14h45 - 16h15</span>
+                            <h4>Vinhos Frank</h4>
+                            <p>Degustação de R$ 20 e passagem estratégica no empório para garantir queijos e embutidos.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="time-badge">16h30 - 18h00</span>
+                            <h4>Chocolateria Caracol</h4>
+                            <p>Finalize com um fondue ou chocolate quente (R$ 35) no fim de tarde.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="itinerary-footer">
+                        <div class="ideal-for"><strong>Ideal para:</strong> Casal, passeio sem pressa.</div>
+                        <div class="total-price">~ R$ 110/pessoa</div>
+                    </div>
+                </div>
+
+                <!-- Roteiro 2 -->
+                <div class="itinerary-card">
+                    <h3>2. Experiência de Degustação</h3>
+                    <p class="itinerary-desc">Para quem quer focar na parte técnica, conhecer rótulos diferentes e mergulhar na enologia.</p>
+                    
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <span class="time-badge">09h00 - 10h30</span>
+                            <h4>Vinhos Bella Aurora</h4>
+                            <p>Degustação premium com salame, queijo e prova de cachaças (R$ 38).</p>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="time-badge">10h45 - 12h15</span>
+                            <h4>Terra do Vinho</h4>
+                            <p>Degustação Premium Guiada (R$ 60), focada numa abordagem bem técnica.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="time-badge">12h30 - 15h00</span>
+                            <h4>Quinta do Olivardo</h4>
+                            <p>Almoço completo e reserva para a experiência "Vinhos dos Mortos" na caverna (R$ 55).</p>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="time-badge">15h15 - 16h30</span>
+                            <h4>Vinhos Canguera</h4>
+                            <p>Sessão de degustação focada em secos (R$ 40) + o famoso café cremoso da casa.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="time-badge">16h45 - 18h00</span>
+                            <h4>Vinícola XV de Novembro</h4>
+                            <p>Degustação completa com taça (R$ 65) e produtos à base de alcachofra.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="itinerary-footer">
+                        <div class="ideal-for"><strong>Ideal para:</strong> Entusiastas, foco técnico (Requer Motorista da Vez).</div>
+                        <div class="total-price">~ R$ 430/pessoa</div>
+                    </div>
+                </div>
+
+                <!-- Roteiro 3 -->
+                <div class="itinerary-card">
+                    <h3>3. Mais Bonito e Turístico</h3>
+                    <p class="itinerary-desc">O roteiro perfeito para fotos, grandes estruturas e paisagens marcantes.</p>
+                    
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <span class="time-badge">09h00 - 10h15</span>
+                            <h4>Vinhos Bella Aurora</h4>
+                            <p>Café da manhã tranquilo e uma degustação leve (R$ 30) na luz da manhã.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="time-badge">10h30 - 12h30</span>
+                            <h4>Vila Don Patto</h4>
+                            <p>Complexo enorme, cenário espetacular para explorar os ângulos e fazer fotos incríveis.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="time-badge">12h45 - 14h45</span>
+                            <h4>Quinta do Olivardo</h4>
+                            <p>Almoço em clima de vila europeia. Garanta as fotos na decoração típica e o Pastel de Belém.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="time-badge">15h00 - 16h45</span>
+                            <h4>Parque Vinícola Góes</h4>
+                            <p>Passeio guiado de 1h pelo vinhedo (R$ 90) com estrutura super profissional.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="time-badge">17h00 - 18h30</span>
+                            <h4>Chocolateria Caracol</h4>
+                            <p>Fechamento do roteiro (R$ 35) no cair da tarde, com doces de primeira linha.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="itinerary-footer">
+                        <div class="ideal-for"><strong>Ideal para:</strong> Casais, criadores de conteúdo e fotografia.</div>
+                        <div class="total-price">~ R$ 260/pessoa</div>
+                    </div>
+                </div>
+
+                <!-- Roteiro 4 -->
+                <div class="itinerary-card">
+                    <h3>4. Gastronômico</h3>
+                    <p class="itinerary-desc">Prioridade para as carnes, embutidos, doces e boa comida, deixando as taças em segundo plano.</p>
+                    
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <span class="time-badge">08h30 - 10h30</span>
+                            <h4>Divina Cantina</h4>
+                            <p>Para quem sai de casa com fome: Buffet livre de café colonial (R$ 30).</p>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="time-badge">11h00 - 12h30</span>
+                            <h4>Vila Don Patto</h4>
+                            <p>Caminhada leve pelas videiras para fazer a digestão, seguida de um gelato (R$ 25).</p>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="time-badge">13h00 - 15h30</span>
+                            <h4>Quinta do Olivardo</h4>
+                            <p>Almoço focado em peso. Se não quiser prato feito, aposte forte no famoso pão com linguiça e carnes.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="time-badge">16h00 - 17h30</span>
+                            <h4>Chocolateria Caracol</h4>
+                            <p>A recompensa do dia: divida um fondue de chocolate ou saboreie um croissant (R$ 35).</p>
+                        </div>
+                    </div>
+                    
+                    <div class="itinerary-footer">
+                        <div class="ideal-for"><strong>Ideal para:</strong> Quem prioriza boa comida e churrasco.</div>
+                        <div class="total-price">~ R$ 200/pessoa</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Tips Section -->
+    <div class="container">
+        <div class="tips-panel">
+            <h3><i class="fas fa-lightbulb"></i> Lembretes para 25 de Julho</h3>
+            <div class="tips-grid">
+                <div class="tip-item">
+                    <p><i class="fas fa-calendar-check"></i> <span class="highlight-text">Reservas Imediatas:</span> Por ser um sábado de inverno, a rota estará lotada. Se escolher o Roteiro 2 ou 3, reserve o passeio da Góes e a caverna do Olivardo com máxima antecedência.</p>
+                </div>
+                <div class="tip-item">
+                    <p><i class="fas fa-snowflake"></i> <span class="highlight-text">Clima de Julho:</span> O inverno em São Roque costuma ser bem rigoroso no final da tarde. Vá com roupas confortáveis e não esqueça um bom casaco no carro.</p>
+                </div>
+                <div class="tip-item">
+                    <p><i class="fas fa-car"></i> <span class="highlight-text">Porta-malas Livre:</span> É quase impossível sair de lá sem sacolas. Reserve espaço no carro para as garrafas, geleias, salames e embutidos fantásticos que vai comprar.</p>
+                </div>
+                <div class="tip-item">
+                    <p><i class="fas fa-steering-wheel"></i> <span class="highlight-text">Motorista da Vez:</span> Especialmente para os roteiros com foco em degustação técnica. Reveze as provas se for dirigir, a segurança na estrada da serra vem primeiro.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
