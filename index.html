@@ -23,6 +23,10 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Lato', sans-serif;
             background-color: var(--bg-color);
@@ -101,6 +105,19 @@
         .place-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .place-card {
+            scroll-margin-top: 2rem;
+        }
+
+        .place-card:target {
+            animation: highlight-pulse 1.6s ease;
+        }
+
+        @keyframes highlight-pulse {
+            0% { box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.7); }
+            100% { box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         }
 
         .card-header {
@@ -286,6 +303,18 @@
             color: var(--text-main);
             margin-bottom: 0.2rem;
         }
+
+        .stage-link {
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 1px dashed transparent;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .stage-link:hover {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
         
         .timeline-item p {
             font-size: 0.95rem;
@@ -310,6 +339,81 @@
         .ideal-for {
             font-size: 0.9rem;
             color: var(--text-light);
+        }
+
+        .timeline-item-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+        .map-icon-btn {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .map-icon-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Quick Planner (top selector) */
+        .quick-planner {
+            padding: 3rem 0 1rem;
+        }
+
+        .planner-intro {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+            color: var(--text-light);
+        }
+
+        .planner-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .tab-btn {
+            background: var(--card-bg);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            font-family: 'Lato', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            background: rgba(114, 47, 55, 0.08);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .planner-panel-wrap .itinerary-card {
+            max-width: 700px;
+            margin: 0 auto;
         }
 
         /* Tips Section */
@@ -347,6 +451,36 @@
             color: var(--secondary);
             font-weight: bold;
         }
+
+        /* Back to top */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, transform 0.2s;
+            z-index: 999;
+        }
+
+        .back-to-top.visible {
+            display: flex;
+        }
+
+        .back-to-top:hover {
+            background: var(--primary-light);
+            transform: translateY(-3px);
+        }
     </style>
 </head>
 <body>
@@ -357,12 +491,24 @@
         <p style="margin-top: 1rem; font-size: 1rem; opacity: 0.9;">Um guia completo de vinícolas, gastronomia e experiências imperdíveis.</p>
     </section>
 
+    <!-- Quick Planner: itinerary picker, first option open by default -->
+    <section class="quick-planner">
+        <div class="container">
+            <h2 class="section-title">Escolha seu Roteiro</h2>
+            <p class="planner-intro">
+                Selecione uma das opções abaixo para ver o roteiro completo com horários. O roteiro 1 já vem aberto. Os 4 roteiros também ficam soltos, com todos os detalhes, mais abaixo no final da página.
+            </p>
+            <div class="planner-tabs" id="plannerTabs"></div>
+            <div class="planner-panel-wrap" id="plannerPanels"></div>
+        </div>
+    </section>
+
     <div class="container">
         <h2 class="section-title">Locais e Atrações</h2>
-        
+
         <div class="places-grid">
             <!-- Vinhos Bella Aurora -->
-            <div class="place-card">
+            <div class="place-card" id="place-vinhos-bella-aurora">
                 <div class="card-header">
                     <h3>Vinhos Bella Aurora</h3>
                     <div class="card-info"><i class="fas fa-map-marker-alt"></i> Rod. Raposo Tavares Km 56.5</div>
@@ -389,7 +535,7 @@
             </div>
 
             <!-- Divina Cantina -->
-            <div class="place-card">
+            <div class="place-card" id="place-divina-cantina">
                 <div class="card-header">
                     <h3>Divina Cantina</h3>
                     <div class="card-info"><i class="fas fa-map-marker-alt"></i> Rua Dr. Durval Villaça, 517</div>
@@ -414,7 +560,7 @@
             </div>
 
             <!-- Vinhos Frank -->
-            <div class="place-card">
+            <div class="place-card" id="place-vinhos-frank">
                 <div class="card-header">
                     <h3>Vinhos Frank</h3>
                     <div class="card-info"><i class="fas fa-map-marker-alt"></i> Estrada do Vinho, Km1</div>
@@ -440,7 +586,7 @@
             </div>
 
             <!-- Terra do Vinho -->
-            <div class="place-card">
+            <div class="place-card" id="place-terra-do-vinho">
                 <div class="card-header">
                     <h3>Terra do Vinho</h3>
                     <div class="card-info"><i class="fas fa-map-marker-alt"></i> Rua Dr. Durval Villaça, 300</div>
@@ -466,7 +612,7 @@
             </div>
 
             <!-- Chocolateria Caracol -->
-            <div class="place-card">
+            <div class="place-card" id="place-chocolateria-caracol">
                 <div class="card-header">
                     <h3>Chocolateria Caracol</h3>
                     <div class="card-info"><i class="fas fa-map-marker-alt"></i> Estrada do Vinho, 400</div>
@@ -493,7 +639,7 @@
             </div>
 
             <!-- Vila Don Patto -->
-            <div class="place-card">
+            <div class="place-card" id="place-vila-don-patto">
                 <div class="card-header">
                     <h3>Vila Don Patto</h3>
                     <div class="card-info"><i class="fas fa-map-marker-alt"></i> Estrada do Vinho, KM 2,5</div>
@@ -519,7 +665,7 @@
             </div>
 
             <!-- Quinta do Olivardo -->
-            <div class="place-card">
+            <div class="place-card" id="place-quinta-do-olivardo">
                 <div class="card-header">
                     <h3>Quinta do Olivardo</h3>
                     <div class="card-info"><i class="fas fa-map-marker-alt"></i> Estrada do Vinho, S/N</div>
@@ -545,7 +691,7 @@
             </div>
 
             <!-- Parque Vinícola Góes -->
-            <div class="place-card">
+            <div class="place-card" id="place-parque-vinicola-goes">
                 <div class="card-header">
                     <h3>Parque Vinícola Góes</h3>
                     <div class="card-info"><i class="fas fa-map-marker-alt"></i> Estrada do Vinho, 9111</div>
@@ -571,7 +717,7 @@
             </div>
 
             <!-- Vinícola XV de Novembro -->
-            <div class="place-card">
+            <div class="place-card" id="place-vinicola-xv-de-novembro">
                 <div class="card-header">
                     <h3>Vinícola XV de Novembro</h3>
                     <div class="card-info"><i class="fas fa-map-marker-alt"></i> Estr. Achiles A. de Moraes, 500</div>
@@ -597,7 +743,7 @@
             </div>
 
             <!-- Vinhos Canguera -->
-            <div class="place-card">
+            <div class="place-card" id="place-vinhos-canguera">
                 <div class="card-header">
                     <h3>Vinhos Canguera</h3>
                     <div class="card-info"><i class="fas fa-map-marker-alt"></i> Estrada do Vinho, Km 8</div>
@@ -633,8 +779,8 @@
                 Saindo de Americana, a viagem leva cerca de 1h45 a 2h. Como o dia escolhido é um sábado de inverno, a região estará bem movimentada. Os roteiros abaixo já estão organizados com horários realistas para evitar filas e aproveitar ao máximo.
             </p>
 
-            <div class="itinerary-grid">
-                
+            <div class="itinerary-grid" id="itineraryGrid">
+
                 <!-- Roteiro 1 -->
                 <div class="itinerary-card">
                     <h3>1. Econômico e Relaxado</h3>
@@ -642,28 +788,43 @@
                     
                     <div class="timeline">
                         <div class="timeline-item">
-                            <span class="time-badge">08h30 - 10h15</span>
-                            <h4>Divina Cantina</h4>
+                            <div class="timeline-item-top">
+                                <span class="time-badge">08h30 - 10h15</span>
+                                <button class="map-icon-btn" type="button" onclick="shareMap('https://www.google.com/maps/search/?api=1&query=Divina+Cantina+Sao+Roque', 'Divina Cantina')" title="Ver/compartilhar no mapa"><i class="fas fa-map-marker-alt"></i></button>
+                            </div>
+                            <h4><a href="#place-divina-cantina" class="stage-link">Divina Cantina</a></h4>
                             <p>Chegue cedo para pegar o buffet de café colonial (R$ 30) bem fresquinho e sem filas.</p>
                         </div>
                         <div class="timeline-item">
-                            <span class="time-badge">10h30 - 12h00</span>
-                            <h4>Terra do Vinho</h4>
+                            <div class="timeline-item-top">
+                                <span class="time-badge">10h30 - 12h00</span>
+                                <button class="map-icon-btn" type="button" onclick="shareMap('https://www.google.com/maps/search/?api=1&query=Terra+do+Vinho+Sao+Roque', 'Terra do Vinho')" title="Ver/compartilhar no mapa"><i class="fas fa-map-marker-alt"></i></button>
+                            </div>
+                            <h4><a href="#place-terra-do-vinho" class="stage-link">Terra do Vinho</a></h4>
                             <p>Degustação tradicional gratuita para abrir o paladar para os vinhos da região.</p>
                         </div>
                         <div class="timeline-item">
-                            <span class="time-badge">12h15 - 14h30</span>
-                            <h4>Vila Don Patto</h4>
+                            <div class="timeline-item-top">
+                                <span class="time-badge">12h15 - 14h30</span>
+                                <button class="map-icon-btn" type="button" onclick="shareMap('https://www.google.com/maps/search/?api=1&query=Vila+Don+Patto+Sao+Roque', 'Vila Don Patto')" title="Ver/compartilhar no mapa"><i class="fas fa-map-marker-alt"></i></button>
+                            </div>
+                            <h4><a href="#place-vila-don-patto" class="stage-link">Vila Don Patto</a></h4>
                             <p>Hora de relaxar nas poltronas. Ótimo para um gelato artesanal (R$ 25) e fotos.</p>
                         </div>
                         <div class="timeline-item">
-                            <span class="time-badge">14h45 - 16h15</span>
-                            <h4>Vinhos Frank</h4>
+                            <div class="timeline-item-top">
+                                <span class="time-badge">14h45 - 16h15</span>
+                                <button class="map-icon-btn" type="button" onclick="shareMap('https://www.google.com/maps/search/?api=1&query=Vinhos+Frank+Sao+Roque', 'Vinhos Frank')" title="Ver/compartilhar no mapa"><i class="fas fa-map-marker-alt"></i></button>
+                            </div>
+                            <h4><a href="#place-vinhos-frank" class="stage-link">Vinhos Frank</a></h4>
                             <p>Degustação de R$ 20 e passagem estratégica no empório para garantir queijos e embutidos.</p>
                         </div>
                         <div class="timeline-item">
-                            <span class="time-badge">16h30 - 18h00</span>
-                            <h4>Chocolateria Caracol</h4>
+                            <div class="timeline-item-top">
+                                <span class="time-badge">16h30 - 18h00</span>
+                                <button class="map-icon-btn" type="button" onclick="shareMap('https://www.google.com/maps/search/?api=1&query=Chocolateria+Caracol+Sao+Roque', 'Chocolateria Caracol')" title="Ver/compartilhar no mapa"><i class="fas fa-map-marker-alt"></i></button>
+                            </div>
+                            <h4><a href="#place-chocolateria-caracol" class="stage-link">Chocolateria Caracol</a></h4>
                             <p>Finalize com um fondue ou chocolate quente (R$ 35) no fim de tarde.</p>
                         </div>
                     </div>
@@ -681,28 +842,43 @@
                     
                     <div class="timeline">
                         <div class="timeline-item">
-                            <span class="time-badge">09h00 - 10h30</span>
-                            <h4>Vinhos Bella Aurora</h4>
+                            <div class="timeline-item-top">
+                                <span class="time-badge">09h00 - 10h30</span>
+                                <button class="map-icon-btn" type="button" onclick="shareMap('https://www.google.com/maps/search/?api=1&query=Vinhos+Bella+Aurora+Sao+Roque', 'Vinhos Bella Aurora')" title="Ver/compartilhar no mapa"><i class="fas fa-map-marker-alt"></i></button>
+                            </div>
+                            <h4><a href="#place-vinhos-bella-aurora" class="stage-link">Vinhos Bella Aurora</a></h4>
                             <p>Degustação premium com salame, queijo e prova de cachaças (R$ 38).</p>
                         </div>
                         <div class="timeline-item">
-                            <span class="time-badge">10h45 - 12h15</span>
-                            <h4>Terra do Vinho</h4>
+                            <div class="timeline-item-top">
+                                <span class="time-badge">10h45 - 12h15</span>
+                                <button class="map-icon-btn" type="button" onclick="shareMap('https://www.google.com/maps/search/?api=1&query=Terra+do+Vinho+Sao+Roque', 'Terra do Vinho')" title="Ver/compartilhar no mapa"><i class="fas fa-map-marker-alt"></i></button>
+                            </div>
+                            <h4><a href="#place-terra-do-vinho" class="stage-link">Terra do Vinho</a></h4>
                             <p>Degustação Premium Guiada (R$ 60), focada numa abordagem bem técnica.</p>
                         </div>
                         <div class="timeline-item">
-                            <span class="time-badge">12h30 - 15h00</span>
-                            <h4>Quinta do Olivardo</h4>
+                            <div class="timeline-item-top">
+                                <span class="time-badge">12h30 - 15h00</span>
+                                <button class="map-icon-btn" type="button" onclick="shareMap('https://www.google.com/maps/search/?api=1&query=Quinta+do+Olivardo+Sao+Roque', 'Quinta do Olivardo')" title="Ver/compartilhar no mapa"><i class="fas fa-map-marker-alt"></i></button>
+                            </div>
+                            <h4><a href="#place-quinta-do-olivardo" class="stage-link">Quinta do Olivardo</a></h4>
                             <p>Almoço completo e reserva para a experiência "Vinhos dos Mortos" na caverna (R$ 55).</p>
                         </div>
                         <div class="timeline-item">
-                            <span class="time-badge">15h15 - 16h30</span>
-                            <h4>Vinhos Canguera</h4>
+                            <div class="timeline-item-top">
+                                <span class="time-badge">15h15 - 16h30</span>
+                                <button class="map-icon-btn" type="button" onclick="shareMap('https://www.google.com/maps/search/?api=1&query=Vinhos+Canguera+Sao+Roque', 'Vinhos Canguera')" title="Ver/compartilhar no mapa"><i class="fas fa-map-marker-alt"></i></button>
+                            </div>
+                            <h4><a href="#place-vinhos-canguera" class="stage-link">Vinhos Canguera</a></h4>
                             <p>Sessão de degustação focada em secos (R$ 40) + o famoso café cremoso da casa.</p>
                         </div>
                         <div class="timeline-item">
-                            <span class="time-badge">16h45 - 18h00</span>
-                            <h4>Vinícola XV de Novembro</h4>
+                            <div class="timeline-item-top">
+                                <span class="time-badge">16h45 - 18h00</span>
+                                <button class="map-icon-btn" type="button" onclick="shareMap('https://www.google.com/maps/search/?api=1&query=Vinicola+XV+de+Novembro+Sao+Roque', 'Vinícola XV de Novembro')" title="Ver/compartilhar no mapa"><i class="fas fa-map-marker-alt"></i></button>
+                            </div>
+                            <h4><a href="#place-vinicola-xv-de-novembro" class="stage-link">Vinícola XV de Novembro</a></h4>
                             <p>Degustação completa com taça (R$ 65) e produtos à base de alcachofra.</p>
                         </div>
                     </div>
@@ -720,28 +896,43 @@
                     
                     <div class="timeline">
                         <div class="timeline-item">
-                            <span class="time-badge">09h00 - 10h15</span>
-                            <h4>Vinhos Bella Aurora</h4>
+                            <div class="timeline-item-top">
+                                <span class="time-badge">09h00 - 10h15</span>
+                                <button class="map-icon-btn" type="button" onclick="shareMap('https://www.google.com/maps/search/?api=1&query=Vinhos+Bella+Aurora+Sao+Roque', 'Vinhos Bella Aurora')" title="Ver/compartilhar no mapa"><i class="fas fa-map-marker-alt"></i></button>
+                            </div>
+                            <h4><a href="#place-vinhos-bella-aurora" class="stage-link">Vinhos Bella Aurora</a></h4>
                             <p>Café da manhã tranquilo e uma degustação leve (R$ 30) na luz da manhã.</p>
                         </div>
                         <div class="timeline-item">
-                            <span class="time-badge">10h30 - 12h30</span>
-                            <h4>Vila Don Patto</h4>
+                            <div class="timeline-item-top">
+                                <span class="time-badge">10h30 - 12h30</span>
+                                <button class="map-icon-btn" type="button" onclick="shareMap('https://www.google.com/maps/search/?api=1&query=Vila+Don+Patto+Sao+Roque', 'Vila Don Patto')" title="Ver/compartilhar no mapa"><i class="fas fa-map-marker-alt"></i></button>
+                            </div>
+                            <h4><a href="#place-vila-don-patto" class="stage-link">Vila Don Patto</a></h4>
                             <p>Complexo enorme, cenário espetacular para explorar os ângulos e fazer fotos incríveis.</p>
                         </div>
                         <div class="timeline-item">
-                            <span class="time-badge">12h45 - 14h45</span>
-                            <h4>Quinta do Olivardo</h4>
+                            <div class="timeline-item-top">
+                                <span class="time-badge">12h45 - 14h45</span>
+                                <button class="map-icon-btn" type="button" onclick="shareMap('https://www.google.com/maps/search/?api=1&query=Quinta+do+Olivardo+Sao+Roque', 'Quinta do Olivardo')" title="Ver/compartilhar no mapa"><i class="fas fa-map-marker-alt"></i></button>
+                            </div>
+                            <h4><a href="#place-quinta-do-olivardo" class="stage-link">Quinta do Olivardo</a></h4>
                             <p>Almoço em clima de vila europeia. Garanta as fotos na decoração típica e o Pastel de Belém.</p>
                         </div>
                         <div class="timeline-item">
-                            <span class="time-badge">15h00 - 16h45</span>
-                            <h4>Parque Vinícola Góes</h4>
+                            <div class="timeline-item-top">
+                                <span class="time-badge">15h00 - 16h45</span>
+                                <button class="map-icon-btn" type="button" onclick="shareMap('https://www.google.com/maps/search/?api=1&query=Parque+Vinicola+Goes+Sao+Roque', 'Parque Vinícola Góes')" title="Ver/compartilhar no mapa"><i class="fas fa-map-marker-alt"></i></button>
+                            </div>
+                            <h4><a href="#place-parque-vinicola-goes" class="stage-link">Parque Vinícola Góes</a></h4>
                             <p>Passeio guiado de 1h pelo vinhedo (R$ 90) com estrutura super profissional.</p>
                         </div>
                         <div class="timeline-item">
-                            <span class="time-badge">17h00 - 18h30</span>
-                            <h4>Chocolateria Caracol</h4>
+                            <div class="timeline-item-top">
+                                <span class="time-badge">17h00 - 18h30</span>
+                                <button class="map-icon-btn" type="button" onclick="shareMap('https://www.google.com/maps/search/?api=1&query=Chocolateria+Caracol+Sao+Roque', 'Chocolateria Caracol')" title="Ver/compartilhar no mapa"><i class="fas fa-map-marker-alt"></i></button>
+                            </div>
+                            <h4><a href="#place-chocolateria-caracol" class="stage-link">Chocolateria Caracol</a></h4>
                             <p>Fechamento do roteiro (R$ 35) no cair da tarde, com doces de primeira linha.</p>
                         </div>
                     </div>
@@ -759,23 +950,35 @@
                     
                     <div class="timeline">
                         <div class="timeline-item">
-                            <span class="time-badge">08h30 - 10h30</span>
-                            <h4>Divina Cantina</h4>
+                            <div class="timeline-item-top">
+                                <span class="time-badge">08h30 - 10h30</span>
+                                <button class="map-icon-btn" type="button" onclick="shareMap('https://www.google.com/maps/search/?api=1&query=Divina+Cantina+Sao+Roque', 'Divina Cantina')" title="Ver/compartilhar no mapa"><i class="fas fa-map-marker-alt"></i></button>
+                            </div>
+                            <h4><a href="#place-divina-cantina" class="stage-link">Divina Cantina</a></h4>
                             <p>Para quem sai de casa com fome: Buffet livre de café colonial (R$ 30).</p>
                         </div>
                         <div class="timeline-item">
-                            <span class="time-badge">11h00 - 12h30</span>
-                            <h4>Vila Don Patto</h4>
+                            <div class="timeline-item-top">
+                                <span class="time-badge">11h00 - 12h30</span>
+                                <button class="map-icon-btn" type="button" onclick="shareMap('https://www.google.com/maps/search/?api=1&query=Vila+Don+Patto+Sao+Roque', 'Vila Don Patto')" title="Ver/compartilhar no mapa"><i class="fas fa-map-marker-alt"></i></button>
+                            </div>
+                            <h4><a href="#place-vila-don-patto" class="stage-link">Vila Don Patto</a></h4>
                             <p>Caminhada leve pelas videiras para fazer a digestão, seguida de um gelato (R$ 25).</p>
                         </div>
                         <div class="timeline-item">
-                            <span class="time-badge">13h00 - 15h30</span>
-                            <h4>Quinta do Olivardo</h4>
+                            <div class="timeline-item-top">
+                                <span class="time-badge">13h00 - 15h30</span>
+                                <button class="map-icon-btn" type="button" onclick="shareMap('https://www.google.com/maps/search/?api=1&query=Quinta+do+Olivardo+Sao+Roque', 'Quinta do Olivardo')" title="Ver/compartilhar no mapa"><i class="fas fa-map-marker-alt"></i></button>
+                            </div>
+                            <h4><a href="#place-quinta-do-olivardo" class="stage-link">Quinta do Olivardo</a></h4>
                             <p>Almoço focado em peso. Se não quiser prato feito, aposte forte no famoso pão com linguiça e carnes.</p>
                         </div>
                         <div class="timeline-item">
-                            <span class="time-badge">16h00 - 17h30</span>
-                            <h4>Chocolateria Caracol</h4>
+                            <div class="timeline-item-top">
+                                <span class="time-badge">16h00 - 17h30</span>
+                                <button class="map-icon-btn" type="button" onclick="shareMap('https://www.google.com/maps/search/?api=1&query=Chocolateria+Caracol+Sao+Roque', 'Chocolateria Caracol')" title="Ver/compartilhar no mapa"><i class="fas fa-map-marker-alt"></i></button>
+                            </div>
+                            <h4><a href="#place-chocolateria-caracol" class="stage-link">Chocolateria Caracol</a></h4>
                             <p>A recompensa do dia: divida um fondue de chocolate ou saboreie um croissant (R$ 35).</p>
                         </div>
                     </div>
@@ -810,6 +1013,59 @@
             </div>
         </div>
     </div>
+
+    <button id="backToTop" class="back-to-top" type="button" title="Voltar ao topo" aria-label="Voltar ao topo">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        function shareMap(url, name) {
+            if (navigator.share) {
+                navigator.share({ title: name, text: 'Confira no mapa: ' + name, url: url }).catch(function () {});
+            } else {
+                window.open(url, '_blank');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var cards = document.querySelectorAll('#itineraryGrid .itinerary-card');
+            var tabsEl = document.getElementById('plannerTabs');
+            var panelsEl = document.getElementById('plannerPanels');
+
+            function selectItinerary(idx) {
+                tabsEl.querySelectorAll('.tab-btn').forEach(function (b, i) {
+                    b.classList.toggle('active', i === idx);
+                });
+                panelsEl.querySelectorAll('.planner-panel').forEach(function (p, i) {
+                    p.style.display = i === idx ? '' : 'none';
+                });
+            }
+
+            cards.forEach(function (card, i) {
+                var title = card.querySelector('h3').textContent;
+
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'tab-btn' + (i === 0 ? ' active' : '');
+                btn.textContent = title;
+                btn.addEventListener('click', function () { selectItinerary(i); });
+                tabsEl.appendChild(btn);
+
+                var clone = card.cloneNode(true);
+                clone.classList.add('planner-panel');
+                if (i !== 0) clone.style.display = 'none';
+                panelsEl.appendChild(clone);
+            });
+        });
+
+        var backToTopBtn = document.getElementById('backToTop');
+        window.addEventListener('scroll', function () {
+            backToTopBtn.classList.toggle('visible', window.scrollY > 400);
+        });
+        backToTopBtn.addEventListener('click', function () {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
 
 </body>
 </html>
